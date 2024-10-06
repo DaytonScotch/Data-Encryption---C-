@@ -1,0 +1,170 @@
+//Data encryption exercise - C++
+
+
+#include <iostream>
+#include <iomanip>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+//Secret agent structure is declared with variables for name, location, mission, and ID number
+struct SecretAgent {
+	string name, location, mission;
+	int agentID;
+};
+
+//Funtion Prototypes
+void encryptName(string s, int k);
+void encryptLocation(string s, int k);
+void encryptMission(string s, int k);
+
+int main(int argc, char** argv) {
+
+	const int SIZE = 160; //Define the array sizes
+	char tempName[SIZE], tempLocation[SIZE], tempMission[SIZE]; //For lines lentered by user
+	SecretAgent agentList[10]; //Array of structures for all the agents, can hold up to 10
+	SecretAgent agent; //Holds data about the agent
+	int option; //int for option choice
+	//Temporary variables before encryption
+	int tempID; //ID number before encryption
+	int k = 5; //number of times to multiply each letter, can be changed here
+	int i;
+	fstream file; 	//Create a file for binary output
+
+	//Presents user with two options
+	cout << "Please select an option:\n";
+	cout << "1 - Add Agent" << endl;
+	cout << "2 - Quit" << endl;
+	cin >> option;
+
+	//Program will only accept option 1 or 2
+	if (option < 1 || option > 2) {
+		cout << "Please enter a valid option:  ";
+		cin >> option;
+
+	}
+
+	for (i = 0; i < 10; ++i) {
+		cout << "\nEnter the Agent Name:  "; //Get agent name from user
+		cin.ignore();
+		cin.getline(tempName, SIZE);
+		encryptName(tempName, k); //call function to get encrypted name
+
+		cout << "\nEnter the Agent Location:  "; //Get agent location from user
+		cin.ignore();
+		cin.getline(tempLocation, SIZE);
+		encryptLocation(tempLocation, k); //call function to get encrypted location
+
+		cout << "\nEnter the Agent's Mission:"; //Get agent mission form user
+		cin.ignore();
+		cin.getline(tempMission, SIZE);
+		encryptMission(tempMission, k); //call function for encrypted mission
+
+		cout << "\nEnter the Agent ID:  ";
+		cin >> tempID;
+		agent.agentID = tempID * 3; //ID# is multiplied by 3, no function needed
+
+		cout << "1 - Add Agent" << endl;
+		cout << "2 - Quit" << endl;
+		cin >> option;
+
+		if (option == 2) {
+
+			file.open("agentList.dat", ios::in | ios::binary); //file is opened if option 2 is chosen
+			file.write(reinterpret_cast<char*> (agentList), sizeof(agentList)); //Data from the array is written to the file
+			file.close(); //File is closed when complete
+
+		}
+
+
+
+	}
+
+	return 0;
+}
+
+//FUNCTION DEFINITIONS:
+//function encrypts the name entered by the user
+void encryptName(string s, int k) {
+	// encrypted name we want returned
+	string name;
+
+	//iterate each letter of the name
+	for (int i = 0; i < s.length(); ++i)
+	{
+		// get of ASCII value of the temp name
+		int val = int(s[i]);
+
+		// store the duplicate value
+		int dup = k;
+
+		// if any letter of the name goes past 'z'
+		if (val + k > 122) {
+			k -= (122 - val);
+			k = k % 26;
+			name += char(96 + k);
+		}
+		else
+			name += char(val + k);
+
+		k = dup;
+	}
+
+}
+
+//function encrypts the location entered by the user
+void encryptLocation(string s, int k) {
+	// encrypted location we want returned
+	string location;
+
+	//iterate each letter of the location
+	for (int i = 0; i < s.length(); ++i)
+	{
+		// get of ASCII value of the location
+		int val = int(s[i]);
+
+		// store the duplicate value
+		int dup = k;
+
+		// if any letter of the location goes past 'z'
+		if (val + k > 122) {
+			k -= (122 - val);
+			k = k % 26;
+			location += char(96 + k);
+		}
+		else
+			location += char(val + k);
+
+		k = dup;
+	}
+
+}
+
+//function encrypts the mission entered by the user
+void encryptMission(string s, int k) {
+	// encrypted mission we want returned
+	string mission;
+
+	//iterate each letter of the mission
+	for (int i = 0; i < s.length(); ++i)
+	{
+		// get of ASCII value of the mission
+		int val = int(s[i]);
+
+		// store the duplicate value
+		int dup = k;
+
+		// if any letter of the mission goes past 'z'
+		if (val + k > 122) {
+			k -= (122 - val);
+			k = k % 26;
+			mission += char(96 + k);
+		}
+		else
+			mission += char(val + k);
+
+		k = dup;
+	}
+
+}
